@@ -1,0 +1,19 @@
+language: "de"
+
+audio_ref: "data/ref/german/anna.mp3"
+text_ref: "Die Temperatur eines Kindes kann Ihnen einen wertvollen Einblick in dessen Gesundheit verschaffen, aber diese korrekt zu messen, kann leicht zu einer Herausforderung werden. Bei Wishbone haben wir das kleinste und intelligenteste Nichtkontaktthermometer entwickelt."
+
+# Data filtering parameters
+data_config:
+  file: "data/text/german.txt"
+  min_phonemes: 8
+  max_phonemes: 200
+
+# Voice generating (cloning) parameters
+generation_config:
+  batch_size: 4
+  speed: 1.0
+  # num_steps: 1
+  # t_shift: 1
+  # p_temperature: 1
+  # c_temperature: 1

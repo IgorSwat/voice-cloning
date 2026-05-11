@@ -1,0 +1,19 @@
+language: "pl"
+
+audio_ref: "data/ref/polish/magda.mp3"
+text_ref: "Tematem zainteresowano się na poważnie jednak dopiero wówczas kiedy kryzysy gospodarcze dwudziestego wieku udowodniły, że w wielu korporacjach członkowie rad nadzorczych nie koncentrują się należycie na swoich obowiązkach, a nadzór przez nich sprawowany nie jest efektywny z punktu widzenia właścicieli firm."
+
+# Data filtering parameters
+data_config:
+  file: "data/text/polish.txt"
+  min_phonemes: 8
+  max_phonemes: 200
+
+# Voice generating (cloning) parameters
+generation_config:
+  batch_size: 4
+  speed: 1.0
+  # num_steps: 1
+  # t_shift: 1
+  # p_temperature: 1
+  # c_temperature: 1
