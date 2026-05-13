@@ -12,6 +12,8 @@ class Phonemizer:
         Args:
             lang_code: The language code (e.g., 'pl', 'de').
         """
+        if lang_code == "en":
+            lang_code = "en-us"
         self.lang_code = lang_code
         self.g2p = espeak.EspeakG2P(language=lang_code)
         

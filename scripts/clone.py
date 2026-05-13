@@ -1,4 +1,3 @@
-from tools.phonemes.phonemizer import Phonemizer
 
 import argparse
 import os
@@ -22,6 +21,7 @@ def main():
   parser.add_argument("--device", type=str, default="cpu", help="Device to use (e.g., mps, cuda, cpu)")
   parser.add_argument("--output", type=str, required=True, help="Output directory")
   parser.add_argument("--samples", type=int, help="Limit the number of generated audios")
+  parser.add_argument("--respect-phonemes", action="store_true", help="Filter based on phoneme count (requires phonemizer)")
 
   args = parser.parse_args()
   config = args.config
@@ -37,7 +37,7 @@ def main():
 
   lang = config_data.get("language")
   audio_ref = config_data.get("audio_ref")
-  text_ref = config_data.get("text_ref")
+  text_ref = config_data.get("text_ref", None)
 
   data_config = config_data.get("data_config", {})
   data_file = data_config.get("file")
@@ -56,8 +56,11 @@ def main():
   if not os.path.exists(data_file):
       raise FileNotFoundError(f"Data file not found at: {data_file}")
 
-  phonemizer = Phonemizer(lang)
   filtered_texts = []
+
+  if args.respect_phonemes:
+      from tools.phonemes.phonemizer import Phonemizer
+      phonemizer = Phonemizer(lang)
 
   with open(data_file, "r", encoding="utf-8") as f:
       for line in f:
@@ -65,10 +68,13 @@ def main():
           if not text:
               continue
           
-          phonemes = phonemizer.phonemize(text)
-          phoneme_count = len(phonemes)
-          
-          if min_phonemes <= phoneme_count <= max_phonemes:
+          if args.respect_phonemes:
+              phonemes = phonemizer.phonemize(text)
+              phoneme_count = len(phonemes)
+              
+              if min_phonemes <= phoneme_count <= max_phonemes:
+                  filtered_texts.append(text)
+          else:
               filtered_texts.append(text)
 
   # Shuffle data

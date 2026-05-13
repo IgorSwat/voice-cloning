@@ -22,22 +22,34 @@ This repository provides a set of tools and scripts for zero-shot voice cloning 
 
 ## Quick Start
 
-1. **Setup Environment**:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-   ```
+### 1. Prepare Text
+Create a `.txt` file in `data/text/` with one sentence per line.
+Example `data/text/my_text.txt`:
+```text
+Hello world.
+This is a test.
+```
 
-2. **Generate Voice Clones**:
-   ```bash
-   python -m scripts.clone --config configuration/config_polish.yaml --output output/my_clones --device mps
-   ```
+### 2. Configure
+Create a `.yaml` file in `configuration/`.
+Example `configuration/my_config.yaml`:
+```yaml
+language: "en"
+audio_ref: "data/ref/speaker.wav"
+text_ref: "The text spoken in the speaker.wav file." # Optional: if omitted, Whisper will auto-transcribe.
+data_config:
+  file: "data/text/my_text.txt"
+generation_config:
+  batch_size: 4
+```
 
-## Configuration
 
-The generation behavior is controlled via YAML files. See `configuration/config_polish.yaml` for an example of how to set:
-- `language`: Target language (e.g., "pl", "de", "en").
-- `audio_ref`: Path to the speaker's reference audio.
-- `data_config`: Parameters for filtering the input text file.
-- `generation_config`: Model hyperparameters like `batch_size`, `speed`, and `num_steps`.
+
+### 3. Run
+```bash
+python scripts/clone.py \
+  --config configuration/my_config.yaml \
+  --output data/output/my_run \
+  --device mps
+```
+Add `--respect-phonemes` if you want to filter lines by length (defined in config).
