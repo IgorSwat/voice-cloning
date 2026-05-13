@@ -27,7 +27,7 @@ Create a `.txt` file in `data/text/` with sample texts to be synthesized into cl
 
 Example `data/text/my_text.txt`:
 ```text
-Hello world.
+Hello world. Nice to see you all.
 This is a test.
 ```
 
