@@ -1,0 +1,21 @@
+language: "pl"
+
+audio_ref: "data/ref/polish/makajler.mp3"
+# text_ref: "Gdyby nie wasze myślenie logiczne szybkie, wspólne działanie, gotowość do pomocy, no - to byśmy sobie nie poradzili z tym problemem. To co osiągneliście jest dużym sukcesem. Wasze działania miały realny wpływ na naszą rzeczywistość. Jesteście przykładem dla... wszystkich innych studentów pozostałego całego kierunku."
+# text_ref: "To co osiągneliście jest duym sukcesem. Wasze działania miały realny wpływ na naszą rzeczywistość. Jesteście przykładem dla... wszystkich innych studentów pozostałego całego kierunku."
+# text_ref: "Na pewno przyjdą, aale musicie pamiętać że jeszcze parę dni macie na, na zabawę, natomiast za parę dni zacznie się ciężka praca, no i życzę wam żeby, żebyście sobie w tej pracy poradzili tak jak poradziliście sobie z rozwiązaniem tego problemu."
+
+# Data filtering parameters
+data_config:
+  file: "data/text/polish.txt"
+  min_phonemes: 8
+  max_phonemes: 2000
+
+# Voice generating (cloning) parameters
+generation_config:
+  batch_size: 1
+  speed: 1.0
+  # num_steps: 1
+  # t_shift: 1
+  # p_temperature: 1
+  # c_temperature: 1

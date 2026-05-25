@@ -22,6 +22,7 @@ def main():
   parser.add_argument("--output", type=str, required=True, help="Output directory")
   parser.add_argument("--samples", type=int, help="Limit the number of generated audios")
   parser.add_argument("--respect-phonemes", action="store_true", help="Filter based on phoneme count (requires phonemizer)")
+  parser.add_argument("--shuffle", action="store_true", help="Shuffle the input texts before generation")
 
   args = parser.parse_args()
   config = args.config
@@ -77,8 +78,9 @@ def main():
           else:
               filtered_texts.append(text)
 
-  # Shuffle data
-  random.shuffle(filtered_texts)
+  # Shuffle data if requested
+  if args.shuffle:
+      random.shuffle(filtered_texts)
 
   if args.samples:
       filtered_texts = filtered_texts[: args.samples]

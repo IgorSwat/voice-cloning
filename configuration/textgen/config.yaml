@@ -1,0 +1,34 @@
+# Configuration for the text generation tool
+
+# Google API Key for Gemini
+api_key: "AIzaSyC9ARRwld58UFhcmCUiXlKTq_2aVhqZeoQ"
+
+# The target language for text generation (e.g., "English", "Polish", "Spanish")
+language: "English"
+
+# Number of entries to generate in a single LLM request
+batch_size: 200
+
+# Wait time (in seconds) between two consecutive requests to avoid rate limits
+timeout: 30
+
+# Maximum number of words allowed for different generation types
+word_limits:
+  single_sentence: 25  # Word limit for statements, questions, and exclamations
+  multi_sentence: 40   # Total word limit for multi-sentence texts
+
+# Probabilities for selecting each generation class (should sum to 1.0)
+probabilities:
+  statements: 0.44      # Chance of generating simple statement sentences
+  questions: 0.18       # Chance of generating diverse questions
+  exclamations: 0.12    # Chance of generating emotive exclamations
+  multi_sentence:   # Chance of generating short multi-sentence texts
+    statement_only: 0.135
+    various: 0.125
+
+# Output file paths for saving the generated data for each class
+output_paths:
+  statements: "data/raw/english/statements.txt"
+  questions: "data/raw/english/questions.txt"
+  exclamations: "data/raw/english/exclamations.txt"
+  multi_sentence: "data/raw/english/multi_sentence.txt"

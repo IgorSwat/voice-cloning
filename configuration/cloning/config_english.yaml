@@ -1,0 +1,20 @@
+language: "en"
+
+audio_ref: "data/ref/english/norbi.mp3"
+text_ref: "Hi everybody! I wanted to share with you the latest release of React Native Executorch. It introduces dedicated hooks for object detection, image classification, style transfer, as well as bindings for Executorch module API."
+# text_ref: "Thank you, Klaus, very much. It's a privilege to be here at this forum where leaders in business, science, art, diplomacy, and world affairs have gathered for many, many years to discuss how we can advance prosperity, security, and peace."
+
+# Data filtering parameters
+data_config:
+  file: "data/text/english_tmp.txt"
+  min_phonemes: 8
+  max_phonemes: 2500
+
+# Voice generating (cloning) parameters
+generation_config:
+  batch_size: 4
+  speed: 1.0
+  # num_steps: 1
+  # t_shift: 1
+  # p_temperature: 1
+  # c_temperature: 1
