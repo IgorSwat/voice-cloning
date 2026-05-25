@@ -23,10 +23,11 @@ This repository provides a set of tools and scripts for zero-shot voice cloning 
 ## Quick Start
 
 ### 1. Prepare Text
-Create a `.txt` file in `data/text/` with one sentence per line.
+Create a `.txt` file in `data/text/` with sample texts to be synthesized into cloned voice (one text per line).
+
 Example `data/text/my_text.txt`:
 ```text
-Hello world.
+Hello world. Nice to see you all.
 This is a test.
 ```
 
@@ -42,7 +43,6 @@ data_config:
 generation_config:
   batch_size: 4
 ```
-
 
 
 ### 3. Run
