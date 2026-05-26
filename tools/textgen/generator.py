@@ -53,6 +53,7 @@ class Generator:
         # internal state
         self.config = {}
         self.presets: Dict[str, Preset] = {}
+        self.styled_presets: Dict[str, Preset] = {}
         self.probs: Dict[str, float] = {}
         
         # 1. Configuration Loading
@@ -83,41 +84,42 @@ class Generator:
         self.timeout = self.config["timeout"]
         self.output_paths = self.config["output_paths"]
         self.word_limits = self.config.get("word_limits", {})
+        
+        # Style handling
+        style_list = self.config.get("style", [])
+        if style_list:
+            self.style_str = "\n".join([f"- {s}" for s in style_list])
+        else:
+            self.style_str = None
+        self.style_prob = self.config.get("style_prob", 0.0)
 
     def _setup_presets(self):
         """Initializes all Preset objects and their corresponding selection weights."""
         probs_conf = self.config["probabilities"]
         
+        # Helper to initialize unstyled and styled presets
+        def add_preset(key, preset_class, max_len_key):
+            max_len = self.word_limits.get(max_len_key)
+            self.presets[key] = preset_class(self.language, self.batch_size, max_len)
+            self.styled_presets[key] = preset_class(self.language, self.batch_size, max_len, style=self.style_str)
+
         # Register Single-Sentence Types
-        self.presets["statements"] = StatementPreset(
-            self.language, self.batch_size, self.word_limits.get("single_sentence")
-        )
+        add_preset("statements", StatementPreset, "single_sentence")
         self.probs["statements"] = probs_conf["statements"]
         
-        self.presets["questions"] = QuestionPreset(
-            self.language, self.batch_size, self.word_limits.get("single_sentence")
-        )
+        add_preset("questions", QuestionPreset, "single_sentence")
         self.probs["questions"] = probs_conf["questions"]
         
-        self.presets["exclamations"] = ExclamationPreset(
-            self.language, self.batch_size, self.word_limits.get("single_sentence")
-        )
+        add_preset("exclamations", ExclamationPreset, "single_sentence")
         self.probs["exclamations"] = probs_conf["exclamations"]
         
-        # Register Multi-Sentence Types
+        # Register Multi-Sentence Type (Consolidated)
+        add_preset("multi_sentence", MultiSentencePreset, "multi_sentence")
         ms_conf = probs_conf["multi_sentence"]
-        
-        self.presets["multi_sentence_statements"] = MultiSentencePreset(
-            self.language, self.batch_size, self.word_limits.get("multi_sentence"), 
-            only_statements=True
-        )
-        self.probs["multi_sentence_statements"] = ms_conf["statement_only"]
-        
-        self.presets["multi_sentence_various"] = MultiSentencePreset(
-            self.language, self.batch_size, self.word_limits.get("multi_sentence"), 
-            only_statements=False
-        )
-        self.probs["multi_sentence_various"] = ms_conf["various"]
+        if isinstance(ms_conf, dict):
+            self.probs["multi_sentence"] = sum(ms_conf.values())
+        else:
+            self.probs["multi_sentence"] = ms_conf
 
     def _validate_probabilities(self):
         """Ensures that the sum of all generation probabilities is exactly 1.0."""
@@ -177,15 +179,18 @@ class Generator:
         for i in tqdm(range(num_requests), desc="Generating text"):
             # 1. Choose Generation Type
             choice = random.choices(preset_keys, weights=weights, k=1)[0]
-            preset = self.presets[choice]
+            
+            # Determine if this request should be styled
+            is_styled = random.random() < self.style_prob and self.style_str
+            preset = self.styled_presets[choice] if is_styled else self.presets[choice]
             
             # 2. Determine Output Destination
-            output_key = "multi_sentence" if "multi_sentence" in choice else choice
-            path = self.output_paths[output_key]
+            path = self.output_paths[choice]
             os.makedirs(os.path.dirname(path), exist_ok=True)
 
             # 3. Execute LLM Request
             try:
+                print(preset.prompt)
                 response = self.model.generate_content(preset.prompt)
                 if not response.text:
                     logger.warning(f"Skipping empty response for: {choice}")

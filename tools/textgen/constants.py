@@ -1,5 +1,5 @@
 DEFAULT_STYLE_INFO = """
-The statements should cover a wide range of topics, including:
+The sentences should cover a wide range of topics, including:
 - Science and Technology
 - Philosophy and Ethics
 - History and Culture
