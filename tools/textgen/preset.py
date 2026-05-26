@@ -1,8 +1,18 @@
+from constants import DEFAULT_STYLE_INFO, QUESTION_DEFAULT_STYLE_ADDON
+
+
 class Preset:
-  def __init__(self, lang: str, batch_size: int, max_length: int | None = None):
+  def __init__(
+    self, 
+    lang: str, 
+    batch_size: int, 
+    max_length: int | None = None,
+    style: str | None = None
+  ):
     self.lang = lang
     self.batch_size = batch_size
     self.max_length = max_length
+    self.style = style
 
 
 class StatementPreset(Preset):
@@ -10,21 +20,13 @@ class StatementPreset(Preset):
     super().__init__(lang, batch_size, max_length)
 
     limit_info = f"\nEach statement must not exceed {self.max_length} words.\n" if self.max_length else ""
+    style_info = self.style if self.style else DEFAULT_STYLE_INFO
 
     self.prompt = f"""
     Generate {self.batch_size} diverse statement sentences in {self.lang}.{limit_info}
-    The statements should cover a wide range of topics, including:
-    - Science and Technology
-    - Philosophy and Ethics
-    - History and Culture
-    - Daily life
-    - Hypothetical scenarios
-    - Arts and Literature
-    - Abstract concepts
-    - Travel and Geography
-    - Personal interactions between people
+    {style_info}
 
-    Ensure variety in statement types and length - from very short (1 or 2 words) to longer, compound sentences.
+    Ensure variety in statement types and length - from very short (1 or 2 words) to long, compound sentences.
 
     Format the output as a simple list of {self.batch_size} statements, one per line.
     No numbering, no extra text, just the statements.
@@ -36,29 +38,13 @@ class QuestionPreset(Preset):
     super().__init__(lang, batch_size, max_length)
 
     limit_info = f"\nEach question must not exceed {self.max_length} words.\n" if self.max_length else ""
-
+    style_info = self.style if self.style else DEFAULT_STYLE_INFO + "\n" + QUESTION_DEFAULT_STYLE_ADDON
+    
     self.prompt = f"""
     Generate {self.batch_size} diverse questions in {self.lang}.{limit_info}
-    The questions should cover a wide range of topics, including:
-    - Science and Technology
-    - Philosophy and Ethics
-    - History and Culture
-    - Daily life
-    - Hypothetical scenarios
-    - Arts and Literature
-    - Abstract concepts
-    - Travel and Geography
-    - Personal interactions between people
+    {style_info}
 
-    Ensure variety in question types, such as:
-    - Open questions (Who, What, Where, When, Why, How)
-    - Yes/No questions
-    - Choice questions
-    - Rhetorical questions
-    - Tag questions
-    - Hypothetical questions
-
-    Also ensure variety in length - from very short (1 or 2 words) to longer, compound sentences.
+    Also ensure variety in length - from very short (1 or 2 words) to long, compound sentences.
 
     Format the output as a simple list of {self.batch_size} questions, one per line.
     No numbering, no extra text, just the questions.
@@ -70,18 +56,11 @@ class ExclamationPreset(Preset):
     super().__init__(lang, batch_size, max_length)
 
     limit_info = f"\nEach exclamation must not exceed {self.max_length} words.\n" if self.max_length else ""
+    style_info = self.style if self.style else DEFAULT_STYLE_INFO
 
     self.prompt = f"""
     Generate {self.batch_size} diverse exclamation sentences in {self.lang}.{limit_info}
-    The exclamations should cover a wide range of tones and emotions, including:
-    - Intense excitement or joy
-    - Sudden surprise or shock
-    - Strong commands or warnings
-    - Frustration or anger
-    - Relief or exhaustion
-    - Sarcastic or playful remarks
-    - Profound realizations or awe
-    - Urgent calls for help or attention
+    {style_info}
 
     Ensure variety in intensity and length - from single-word interjections to full, emotive sentences.
 
@@ -103,22 +82,14 @@ class MultiSentencePreset(Preset):
 
     limit_info = f"\n    Each text must not exceed {self.max_length} words." if self.max_length else ""
     sentence_type_info = "All sentences must be statements." if self.only_statements else "Each text must contain at least one question or exclamation (in addition to statements)."
+    style_info = self.style if self.style else DEFAULT_STYLE_INFO
 
     self.prompt = f"""
     Generate {self.batch_size} diverse multi-sentence texts in {self.lang}.{limit_info}
     Each text should consist of at least 2 and at most 3 short sentences.
     {sentence_type_info}
 
-    The texts should cover a wide range of topics, including:
-    - Science and Technology
-    - Philosophy and Ethics
-    - History and Culture
-    - Daily life
-    - Hypothetical scenarios
-    - Arts and Literature
-    - Abstract concepts
-    - Travel and Geography
-    - Personal interactions between people
+    {style_info}
 
     Ensure variety in tone, complexity, and length across the {self.batch_size} texts.
 
